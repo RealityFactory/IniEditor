@@ -192,6 +192,12 @@ BOOL CIniEditorApp::InitInstance()
 		else
 			fputs("UseCharSelect=false\n\n", fdOutput);
 
+		fputs(";\n; Set UseDifficultLevel\n;\n\n", fdOutput);
+		if(dlg.m_difficult)
+			fputs("UseDifficultLevel=true\n\n", fdOutput);
+		else
+			fputs("UseDifficultLevel=false\n\n", fdOutput);
+
 		fputs(";\n; Set UseFirst\n;\n\n", fdOutput);
 		if(dlg.m_usefirst)
 			fputs("UseFirst=true\n\n", fdOutput);

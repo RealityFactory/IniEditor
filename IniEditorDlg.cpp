@@ -44,6 +44,7 @@ CIniEditorDlg::CIniEditorDlg(CWnd* pParent /*=NULL*/)
 	m_usefirst = FALSE;
 	m_showtrack = FALSE;
 	m_usecselect = FALSE;
+	m_difficult = FALSE;
 	//}}AFX_DATA_INIT
 	// Note that LoadIcon does not require a subsequent DestroyIcon in Win32
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
@@ -93,6 +94,7 @@ void CIniEditorDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_USEFIRST, m_usefirst);
 	DDX_Check(pDX, IDC_SHOWTRACK, m_showtrack);
 	DDX_Check(pDX, IDC_USECSELECT, m_usecselect);
+	DDX_Check(pDX, IDC_DIFFICULT, m_difficult);
 	//}}AFX_DATA_MAP
 }
 
@@ -131,7 +133,7 @@ BOOL CIniEditorDlg::OnInitDialog()
 	_getcwd(m_currentdir, 512);
 	m_editgamma.SetSlideLink( this, IDC_SLIDERGAMMA );
 	m_editgamma.SetParams( 0.5, 4.0, 10, "%1.1f" );
-	float initalgamma = 2.1f;
+	float initalgamma = 1.1f;
 	m_weapon = false;
 	m_usedialog = false;
 	m_fullscreen = true;
@@ -141,6 +143,7 @@ BOOL CIniEditorDlg::OnInitDialog()
 	m_usesecond = false;
 	m_showtrack = false;
 	m_usecselect = false;
+	m_difficult = false;
 	
 	const char* driverName;
 	m_videolist.ResetContent();
@@ -222,6 +225,13 @@ BOOL CIniEditorDlg::OnInitDialog()
 			szAtom = strtok(NULL, " \n");
 			if(!stricmp(szAtom, "true"))
 				m_usecselect = true;
+			continue;
+		}
+		if(!stricmp(szAtom, "UseDifficultLevel"))
+		{
+			szAtom = strtok(NULL, " \n");
+			if(!stricmp(szAtom, "true"))
+				m_difficult = true;
 			continue;
 		}
 		if(!stricmp(szAtom, "UseFirst"))

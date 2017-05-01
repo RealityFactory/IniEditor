@@ -63,6 +63,7 @@ public:
 	BOOL	m_usefirst;
 	BOOL	m_showtrack;
 	BOOL	m_usecselect;
+	BOOL	m_difficult;
 	//}}AFX_DATA
 	TCHAR m_currentdir[512];
 	geEngine			*m_pEngine;
