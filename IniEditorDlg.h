@@ -10,7 +10,6 @@
 
 #include "SmartEdit.h"
 #include "sliders.h"
-#include "genesis.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CIniEditorDlg dialog
@@ -20,6 +19,11 @@ class CIniEditorDlg : public CDialog
 // Construction
 public:
 	CIniEditorDlg(CWnd* pParent = NULL);	// standard constructor
+
+	BOOL  m_fullscreen;
+	int   m_width;
+	int m_height;
+	char m_driver[32];
 
 // Dialog Data
 	//{{AFX_DATA(CIniEditorDlg)
@@ -31,10 +35,6 @@ public:
 	CButton	m_sabutton;
 	CButton	m_cutbutton;
 	CButton	m_browsepack;
-	CSmartEdit	m_editgamma;
-	CComboBox	m_resolution;
-	CComboBox	m_videolist;
-	CLinkSlider	m_gamma;
 	CButton	m_createini;
 	CButton	m_levelbrowse;
 	CButton	m_menubrowse;
@@ -44,11 +44,7 @@ public:
 	CString	m_menuname;
 	CString	m_levelname;
 	CString	m_gamename;
-	int		m_gammavalue;
-	CString	m_gammaamount;
 	BOOL	m_weapon;
-	int		m_videoindex;
-	int		m_resindex;
 	CString	m_packfile;
 	BOOL	m_usedialog;
 	BOOL	m_usecutscene;
@@ -64,13 +60,9 @@ public:
 	BOOL	m_showtrack;
 	BOOL	m_usecselect;
 	BOOL	m_difficult;
+	CString	m_ddif;
 	//}}AFX_DATA
 	TCHAR m_currentdir[512];
-	geEngine			*m_pEngine;
-	geDriver			*m_pDriver;
-	geDriver_Mode		*m_pMode;
-	geDriver_System		*m_pDriverSystem;
-	CString	m_drivername;
 
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CIniEditorDlg)
@@ -81,9 +73,6 @@ public:
 // Implementation
 protected:
 	HICON m_hIcon;
-	BOOL  m_fullscreen;
-	int   m_width;
-	int m_height;
 	int count;
 
 	// Generated message map functions
@@ -94,8 +83,6 @@ protected:
 	afx_msg void OnActbrowse();
 	afx_msg void OnMenuini();
 	afx_msg void OnStartlevel();
-	afx_msg void OnSelchangeCombovideo();
-	afx_msg void OnSelchangeCombores();
 	afx_msg void OnPack();
 	afx_msg void OnCbutton();
 	afx_msg void OnSabutton();

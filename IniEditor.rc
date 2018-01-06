@@ -66,7 +66,7 @@ END
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDR_MAINFRAME           ICON    DISCARDABLE     "res\IniEditor.ico"
+IDR_MAINFRAME           ICON    DISCARDABLE     "icon1.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -92,25 +92,15 @@ BEGIN
     LTEXT           "Starting Level",IDC_STATIC,15,98,44,8
     EDITTEXT        IDC_EDITSTART,61,94,113,14,ES_AUTOHSCROLL | ES_READONLY
     PUSHBUTTON      "...",IDC_STARTLEVEL,177,94,14,14
-    LTEXT           "Gamma",IDC_STATIC,17,159,25,8
-    CONTROL         "Slider1",IDC_SLIDERGAMMA,"msctls_trackbar32",TBS_BOTH | 
-                    TBS_NOTICKS | WS_TABSTOP,61,144,115,14
-    COMBOBOX        IDC_COMBOVIDEO,21,205,134,59,CBS_DROPDOWNLIST | 
-                    WS_VSCROLL | WS_TABSTOP
-    COMBOBOX        IDC_COMBORES,35,242,100,79,CBS_DROPDOWNLIST | WS_VSCROLL | 
-                    WS_TABSTOP
-    LTEXT           "Video Driver",IDC_STATIC,64,191,40,8
-    LTEXT           "Video Resolution",IDC_STATIC,57,228,54,8
     CTEXT           "Reality Factory INI File Editor",IDC_STATIC,165,279,92,
                     8
-    EDITTEXT        IDC_EDITGAMMA,93,163,40,12,ES_AUTOHSCROLL
-    CONTROL         "Weapon Position On",IDC_CHECKWEAPON,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,211,215,81,10
+    CONTROL         "Weapon Positioning On",IDC_CHECKWEAPON,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,17,153,91,10
     EDITTEXT        IDC_PACKFILE,61,121,113,14,ES_AUTOHSCROLL | ES_READONLY
     LTEXT           "Pack File",IDC_STATIC,18,126,30,8
     PUSHBUTTON      "...",IDC_PACK,177,122,14,14
     CONTROL         "Use Level Load Dialog",IDC_USEDIALOG,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,299,215,88,10
+                    BS_AUTOCHECKBOX | WS_TABSTOP,17,169,88,10
     EDITTEXT        IDC_SSCREEN,267,31,113,14,ES_AUTOHSCROLL | ES_READONLY
     LTEXT           "SplashScreen",IDC_STATIC,214,34,47,8
     EDITTEXT        IDC_SAUDIO,267,51,113,14,ES_AUTOHSCROLL | ES_READONLY
@@ -140,12 +130,15 @@ BEGIN
                     WS_TABSTOP,268,14,58,10
     GROUPBOX        "1st Logo",IDC_STATIC,207,7,206,99
     GROUPBOX        "2nd Logo",IDC_STATIC,207,113,206,99
-    CONTROL         "Show Track Path",IDC_SHOWTRACK,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,211,228,79,10
+    CONTROL         "Show ScriptPoint Path",IDC_SHOWTRACK,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,17,185,93,10
     CONTROL         "Allow Character Selection",IDC_USECSELECT,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,299,228,95,11
+                    BS_AUTOCHECKBOX | WS_TABSTOP,17,201,95,11
     CONTROL         "Allow Difficulty Level",IDC_DIFFICULT,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,212,244,79,10
+                    BS_AUTOCHECKBOX | WS_TABSTOP,17,218,79,10
+    EDITTEXT        IDC_DDIFF,98,234,16,12,ES_CENTER | ES_NUMBER
+    LTEXT           "Default Difficulty Level",IDC_STATIC,17,234,74,12,
+                    SS_CENTERIMAGE
 END
 
 

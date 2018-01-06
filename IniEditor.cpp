@@ -79,10 +79,6 @@ BOOL CIniEditorApp::InitInstance()
 		sprintf(szOutputString, "PlayerAvatar=%s\n\n", dlg.m_actorname);
 		fputs(szOutputString, fdOutput);
 
-		fputs(";\n; Starting Gamma level\n;\n\n", fdOutput);
-		sprintf(szOutputString, "Gamma=%s\n\n", dlg.m_gammaamount);
-		fputs(szOutputString, fdOutput);
-
 		fputs(";\n; Define the menu initialization file\n;\n\n", fdOutput);
 		sprintf(szOutputString, "Menu=%s\n\n", dlg.m_menuname);
 		fputs(szOutputString, fdOutput);
@@ -122,69 +118,29 @@ BOOL CIniEditorApp::InitInstance()
 		else
 			fputs("ShowTrack=false\n\n", fdOutput);
 
-		long w, h;
-
-		if(dlg.m_drivername.Find("Pick")==-1)
-		{
-			dlg.m_pDriver = geDriver_SystemGetNextDriver(dlg.m_pDriverSystem, NULL);
-			for (int cnt = 0; cnt < dlg.m_videoindex; cnt++)
-			{
-				dlg.m_pDriver = geDriver_SystemGetNextDriver(dlg.m_pDriverSystem, dlg.m_pDriver);
-			}
-			dlg.m_pMode = geDriver_GetNextMode(dlg.m_pDriver, NULL);
-			for (cnt = 0; cnt < dlg.m_resindex; cnt++)
-			{
-				dlg.m_pMode = geDriver_GetNextMode(dlg.m_pDriver, dlg.m_pMode);
-			}
-
-			geDriver_ModeGetWidthHeight(dlg.m_pMode, &w, &h);
-		}
-		else
-		{
-			w=640;
-			h=480;
-		}
-
 		fputs(";\n; Fullscreen tells the engine to go full-screen or not\n;\n\n", fdOutput);
 
-		if ((w == -1) && (h == -1))
-		{
+		if (!dlg.m_fullscreen)
 			fputs("FullScreen=false\n\n", fdOutput);
-			w = 640;
-			h = 480;
-		}
 		else
 			fputs("FullScreen=true\n\n", fdOutput);
 
 		fputs(";\n; Width is the width of the game display\n;\n\n", fdOutput);
-		sprintf(szOutputString, "Width=%d\n\n", w);
+		sprintf(szOutputString, "Width=%d\n\n", dlg.m_width);
 		fputs(szOutputString, fdOutput);
 
 		fputs(";\n; Height is the height of the game display\n;\n\n", fdOutput);
-		sprintf(szOutputString, "Height=%d\n\n", h);
+		sprintf(szOutputString, "Height=%d\n\n", dlg.m_height);
 		fputs(szOutputString, fdOutput);
 
 		fputs(";\n; Renderer is the renderer to use, HARDWARE or SOFTWARE\n;\n", fdOutput);
-		
-		if(dlg.m_drivername.Find("Software")!=-1)
-			fputs(";\n\nRenderer=software\n\n", fdOutput);
-		else
-			fputs(";\n\nRenderer=hardware\n\n", fdOutput);
+
+		fputs(";\n\nRenderer=hardware\n\n", fdOutput);
 
 		fputs(";\n; Driver tells the system which driver to use\n;\n", fdOutput);
 
-		if(dlg.m_drivername.Find("D3D")!=-1)
-			fputs(";\n\nDriver=d3d\n\n", fdOutput);
-		else if(dlg.m_drivername.Find("Glide")!=-1)
-			fputs(";\n\nDriver=glide\n\n", fdOutput);
-		else if(dlg.m_drivername.Find("Open")!=-1)
-			fputs(";\n\nDriver=opengl\n\n", fdOutput);
-		else if(dlg.m_drivername.Find("Software")!=-1)
-			fputs(";\n\nDriver=windowed\n\n", fdOutput);
-		else if(dlg.m_drivername.Find("Wire")!=-1)
-			fputs(";\n\nDriver=wire\n\n", fdOutput);
-		else if(dlg.m_drivername.Find("Pick")!=-1)
-			fputs(";\n\nDriver=pick\n\n", fdOutput);
+		sprintf(szOutputString, ";\n\nDriver=%s\n\n", dlg.m_driver);
+		fputs(szOutputString, fdOutput);
 
 		fputs(";\n; Set UseCharSelect\n;\n\n", fdOutput);
 		if(dlg.m_usecselect)
@@ -244,6 +200,14 @@ BOOL CIniEditorApp::InitInstance()
 
 		fputs(";\n; CutScene defines the cut scene to use\n;\n\n", fdOutput);
 		sprintf(szOutputString, "CutScene1=%s\n\n", dlg.m_cutscene2);
+		fputs(szOutputString, fdOutput);
+
+		if(atoi(dlg.m_ddif)>3)
+			dlg.m_ddif = _T("3");
+		if(atoi(dlg.m_ddif)<1)
+			dlg.m_ddif = _T("1");
+		fputs(";\n; Default Difficulty Level\n;\n\n", fdOutput);
+		sprintf(szOutputString, "DefaultDifficulty=%s\n\n", dlg.m_ddif);
 		fputs(szOutputString, fdOutput);
 
 		fclose(fdOutput);

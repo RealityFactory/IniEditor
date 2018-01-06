@@ -25,11 +25,7 @@ CIniEditorDlg::CIniEditorDlg(CWnd* pParent /*=NULL*/)
 	m_menuname = _T("");
 	m_levelname = _T("");
 	m_gamename = _T("");
-	m_gammavalue = 0;
-	m_gammaamount = _T("");
 	m_weapon = FALSE;
-	m_videoindex = 0;
-	m_resindex = -1;
 	m_packfile = _T("");
 	m_usedialog = FALSE;
 	m_usecutscene = FALSE;
@@ -45,6 +41,7 @@ CIniEditorDlg::CIniEditorDlg(CWnd* pParent /*=NULL*/)
 	m_showtrack = FALSE;
 	m_usecselect = FALSE;
 	m_difficult = FALSE;
+	m_ddif = _T("1");
 	//}}AFX_DATA_INIT
 	// Note that LoadIcon does not require a subsequent DestroyIcon in Win32
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
@@ -61,10 +58,6 @@ void CIniEditorDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_SABUTTON, m_sabutton);
 	DDX_Control(pDX, IDC_CBUTTON, m_cutbutton);
 	DDX_Control(pDX, IDC_PACK, m_browsepack);
-	DDX_Control(pDX, IDC_EDITGAMMA, m_editgamma);
-	DDX_Control(pDX, IDC_COMBORES, m_resolution);
-	DDX_Control(pDX, IDC_COMBOVIDEO, m_videolist);
-	DDX_Control(pDX, IDC_SLIDERGAMMA, m_gamma);
 	DDX_Control(pDX, IDOK, m_createini);
 	DDX_Control(pDX, IDC_STARTLEVEL, m_levelbrowse);
 	DDX_Control(pDX, IDC_MENUINI, m_menubrowse);
@@ -74,12 +67,7 @@ void CIniEditorDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDITMENU, m_menuname);
 	DDX_Text(pDX, IDC_EDITSTART, m_levelname);
 	DDX_Text(pDX, IDC_GAMENAME, m_gamename);
-	DDX_Slider(pDX, IDC_SLIDERGAMMA, m_gammavalue);
-	DDX_Text(pDX, IDC_EDITGAMMA, m_gammaamount);
-	DDV_MaxChars(pDX, m_gammaamount, 10);
 	DDX_Check(pDX, IDC_CHECKWEAPON, m_weapon);
-	DDX_CBIndex(pDX, IDC_COMBOVIDEO, m_videoindex);
-	DDX_CBIndex(pDX, IDC_COMBORES, m_resindex);
 	DDX_Text(pDX, IDC_PACKFILE, m_packfile);
 	DDX_Check(pDX, IDC_USEDIALOG, m_usedialog);
 	DDX_Check(pDX, IDC_CUTCHECK, m_usecutscene);
@@ -95,6 +83,8 @@ void CIniEditorDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_SHOWTRACK, m_showtrack);
 	DDX_Check(pDX, IDC_USECSELECT, m_usecselect);
 	DDX_Check(pDX, IDC_DIFFICULT, m_difficult);
+	DDX_Text(pDX, IDC_DDIFF, m_ddif);
+	DDV_MaxChars(pDX, m_ddif, 1);
 	//}}AFX_DATA_MAP
 }
 
@@ -105,8 +95,6 @@ ON_WM_QUERYDRAGICON()
 ON_BN_CLICKED(IDC_ACTBROWSE, OnActbrowse)
 ON_BN_CLICKED(IDC_MENUINI, OnMenuini)
 ON_BN_CLICKED(IDC_STARTLEVEL, OnStartlevel)
-ON_CBN_SELCHANGE(IDC_COMBOVIDEO, OnSelchangeCombovideo)
-ON_CBN_SELCHANGE(IDC_COMBORES, OnSelchangeCombores)
 	ON_BN_CLICKED(IDC_PACK, OnPack)
 	ON_BN_CLICKED(IDC_CBUTTON, OnCbutton)
 	ON_BN_CLICKED(IDC_SABUTTON, OnSabutton)
@@ -131,12 +119,8 @@ BOOL CIniEditorDlg::OnInitDialog()
 	
 	_chdir("..");
 	_getcwd(m_currentdir, 512);
-	m_editgamma.SetSlideLink( this, IDC_SLIDERGAMMA );
-	m_editgamma.SetParams( 0.5, 4.0, 10, "%1.1f" );
-	float initalgamma = 1.1f;
 	m_weapon = false;
 	m_usedialog = false;
-	m_fullscreen = true;
 	m_usecutscene = false;
 	m_usecutscene2 = false;
 	m_usefirst = false;
@@ -144,26 +128,7 @@ BOOL CIniEditorDlg::OnInitDialog()
 	m_showtrack = false;
 	m_usecselect = false;
 	m_difficult = false;
-	
-	const char* driverName;
-	m_videolist.ResetContent();
-	m_pEngine = geEngine_Create(GetSafeHwnd(), "", ".");
-	// Get pointer to Driver Subsystem
-	m_pDriverSystem = geEngine_GetDriverSystem(m_pEngine);
-	// Get first driver
-	m_pDriver = geDriver_SystemGetNextDriver(m_pDriverSystem, NULL);
-	while (m_pDriver != NULL)
-	{
-		// Loop through drivers and propogate driver dropdown
-		geDriver_GetName(m_pDriver, &driverName);
-		m_videolist.AddString(driverName);
-		m_pDriver = geDriver_SystemGetNextDriver(m_pDriverSystem, m_pDriver);
-	} // End Driver Loop
-	m_videolist.AddString("Pick at RunTime");
-	count = m_videolist.GetCount();
-	m_resolution.ResetContent();
-	m_resindex = 0;
-	
+
 	FILE *fdInput = NULL;
 	char szInputString[1024] = {""};
 	char szOutputString[1024] = {""};
@@ -212,12 +177,6 @@ BOOL CIniEditorDlg::OnInitDialog()
 		{
 			szAtom = strtok(NULL, " \n");
 			m_packfile = _T(szAtom);
-			continue;
-		}
-		if(!stricmp(szAtom, "Gamma"))
-		{
-			szAtom = strtok(NULL, " \n");
-			initalgamma = (float)atof(szAtom);
 			continue;
 		}
 		if(!stricmp(szAtom, "UseCharSelect"))
@@ -333,6 +292,7 @@ BOOL CIniEditorDlg::OnInitDialog()
 		}
 		if(!stricmp(szAtom, "FullScreen"))
 		{
+			m_fullscreen = true;
 			szAtom = strtok(NULL, " \n");
 			if(!stricmp(szAtom, "false"))
 				m_fullscreen = false;
@@ -340,171 +300,20 @@ BOOL CIniEditorDlg::OnInitDialog()
 		}
 		if(!stricmp(szAtom, "Driver"))
 		{
-			m_videoindex = -1;
 			szAtom = strtok(NULL, " \n");
-			if(!stricmp(szAtom, "d3d"))
-			{
-				for(int ii=0;ii<count;ii++)
-				{
-					CString tmp; 
-					m_videolist.GetLBText(ii, tmp);
-					if(tmp.Find("D3D")!=-1)
-					{
-						m_videoindex = ii;
-						break;
-					}
-				}
-				continue;
-			}
-			
-			if(!stricmp(szAtom, "glide"))
-			{
-				for(int ii=0;ii<count;ii++)
-				{
-					CString tmp; 
-					m_videolist.GetLBText(ii, tmp);
-					if(tmp.Find("Glide")!=-1)
-					{
-						m_videoindex = ii;
-						break;
-					}
-				}
-				continue;
-			}
-			if(!stricmp(szAtom, "opengl"))
-			{
-				for(int ii=0;ii<count;ii++)
-				{
-					CString tmp; 
-					m_videolist.GetLBText(ii, tmp);
-					if(tmp.Find("Open")!=-1)
-					{
-						m_videoindex = ii;
-						break;
-					}
-				}
-				continue;
-			}
-			if(!stricmp(szAtom, "wire"))
-			{
-				for(int ii=0;ii<count;ii++)
-				{
-					CString tmp; 
-					m_videolist.GetLBText(ii, tmp);
-					if(tmp.Find("Wire")!=-1)
-					{
-						m_videoindex = ii;
-						break;
-					}
-				}
-				continue;
-			}
-			if(!stricmp(szAtom, "pick"))
-			{
-				for(int ii=0;ii<count;ii++)
-				{
-					CString tmp; 
-					m_videolist.GetLBText(ii, tmp);
-					if(tmp.Find("Pick")!=-1)
-					{
-						m_videoindex = ii;
-						break;
-					}
-				}
-				m_resindex = -1;
-				continue;
-			}
-			if(!stricmp(szAtom, "windowed"))
-			{
-				for(int ii=0;ii<count;ii++)
-				{
-					CString tmp; 
-					m_videolist.GetLBText(ii, tmp);
-					if(tmp.Find("Full")!=-1)
-					{
-						m_videoindex = ii;
-						break;
-					}
-				}
-				if(!m_fullscreen)
-				{
-					for(int ii=0;ii<count;ii++)
-					{
-						CString tmp; 
-						m_videolist.GetLBText(ii, tmp);
-						if(tmp.Find("Window")!=-1)
-						{
-							m_videoindex = ii;
-							break;
-						}
-					}
-					continue;
-				}
-				continue;
-			}
+			strcpy(m_driver, szAtom);
+		}
+		if(!stricmp(szAtom, "DefaultDifficulty"))
+		{
+			szAtom = strtok(NULL, " \n");
+			m_ddif = _T(szAtom);
+			continue;
 		}
 	}
 	fclose(fdInput);
-	m_videolist.GetLBText(m_videoindex, m_drivername);
-	
-	if(m_resindex!=-1)
-	{
-		long w, h;
-		char *modeString;
-		char *width, *height;
-		
-		modeString = new char[10];
-		width = new char[5];
-		height = new char[5];
-		m_resolution.ResetContent();
-		m_pDriver = geDriver_SystemGetNextDriver(m_pDriverSystem, NULL);
-		for (int cnt = 0; cnt < m_videoindex; cnt++)
-		{
-			m_pDriver = geDriver_SystemGetNextDriver(m_pDriverSystem, m_pDriver);
-		}
-		m_pMode = geDriver_GetNextMode(m_pDriver, NULL);
-		int rescnt =0 ;
-		while (m_pMode != NULL)
-		{
-			// propogate mode dropdown
-			geDriver_ModeGetWidthHeight(m_pMode, &w, &h);
-			if ((w == -1) && (h == -1))
-			{
-				strcpy(modeString, "Windowed");
-			}
-			else
-			{
-				ltoa(w, width, 10);
-				ltoa(h, height, 10);
-				strcpy(modeString, "\0");
-				strcat(modeString, width);
-				strcat(modeString, "x");
-				strcat(modeString, height);
-			}
-			m_resolution.AddString(modeString);
-			if(m_fullscreen)
-			{
-				if ((w == m_width) && (h == m_height))
-					m_resindex = rescnt;
 
-			}
-			else
-			{
-				if ((w == -1) && (h == -1))
-					m_resindex = rescnt;
-			}
-			rescnt+=1;
-			m_pMode = geDriver_GetNextMode(m_pDriver, m_pMode);
-		}
-		delete[] modeString;
-		delete[] width;
-		delete[] height;
-	}
-	
 	UpdateData(FALSE);
-	
-	m_editgamma.SetValue(initalgamma);
-	
+
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
 
@@ -547,11 +356,6 @@ HCURSOR CIniEditorDlg::OnQueryDragIcon()
 
 void CIniEditorDlg::OnActbrowse() 
 {
-	// TODO: Add your control notification handler code here
-	int temp = m_gamma.GetPos();
-	TCHAR buf[512];
-    m_editgamma.GetWindowText( buf, sizeof( buf ) / sizeof(TCHAR) );
-	
 	MFileDlg dlgFile(TRUE);
 	TCHAR m_dir[512];
 	strcpy(m_dir, m_currentdir);
@@ -582,17 +386,10 @@ void CIniEditorDlg::OnActbrowse()
 			UpdateData(FALSE);
 		}
 	}
-	m_gamma.SetSlidePos(temp);
-	m_editgamma.SetWindowText(buf);
 }
 
 void CIniEditorDlg::OnMenuini() 
 {
-	// TODO: Add your control notification handler code here
-	int temp = m_gamma.GetPos();
-	TCHAR buf[512];
-    m_editgamma.GetWindowText( buf, sizeof( buf ) / sizeof(TCHAR) );
-	
 	MFileDlg dlgFile(TRUE);
 	TCHAR m_dir[512];
 	strcpy(m_dir, m_currentdir);
@@ -623,17 +420,10 @@ void CIniEditorDlg::OnMenuini()
 			UpdateData(FALSE);
 		}
 	}
-	m_gamma.SetSlidePos(temp);
-	m_editgamma.SetWindowText(buf);
 }
 
 void CIniEditorDlg::OnStartlevel() 
 {
-	// TODO: Add your control notification handler code here
-	int temp = m_gamma.GetPos();
-	TCHAR buf[512];
-    m_editgamma.GetWindowText( buf, sizeof( buf ) / sizeof(TCHAR) );
-	
 	MFileDlg dlgFile(TRUE);
 	TCHAR m_dir[512];
 	strcpy(m_dir, m_currentdir);
@@ -664,78 +454,10 @@ void CIniEditorDlg::OnStartlevel()
 			UpdateData(FALSE);
 		}
 	}
-	m_gamma.SetSlidePos(temp);
-	m_editgamma.SetWindowText(buf);
-}
-
-void CIniEditorDlg::OnSelchangeCombovideo() 
-{
-	// TODO: Add your control notification handler code here
-	UpdateData();
-	
-	m_videolist.GetLBText(m_videoindex, m_drivername);
-	m_resolution.ResetContent();
-	CString tmp; 
-	m_videolist.GetLBText(m_videoindex, tmp);
-	if(tmp.Find("Pick")!=-1)
-	{
-		m_resindex = -1;
-		return;
-	}
-	
-	m_resindex = 0;
-	long w, h;
-	char *modeString;
-	char *width, *height;
-	
-	modeString = new char[10];
-	width = new char[5];
-	height = new char[5];
-	m_pDriver = geDriver_SystemGetNextDriver(m_pDriverSystem, NULL);
-	for (int cnt = 0; cnt < m_videoindex; cnt++)
-	{
-		m_pDriver = geDriver_SystemGetNextDriver(m_pDriverSystem, m_pDriver);
-	}
-	m_pMode = geDriver_GetNextMode(m_pDriver, NULL);
-	while (m_pMode != NULL)
-	{
-		// propogate mode dropdown
-		geDriver_ModeGetWidthHeight(m_pMode, &w, &h);
-		if ((w == -1) && (h == -1))
-		{
-			strcpy(modeString, "Windowed");
-		}
-		else
-		{
-			ltoa(w, width, 10);
-			ltoa(h, height, 10);
-			strcpy(modeString, "\0");
-			strcat(modeString, width);
-			strcat(modeString, "x");
-			strcat(modeString, height);
-		}
-		m_resolution.AddString(modeString);
-		m_pMode = geDriver_GetNextMode(m_pDriver, m_pMode);
-	}
-	delete[] modeString;
-	delete[] width;
-	delete[] height;
-	UpdateData(FALSE);
-}
-
-void CIniEditorDlg::OnSelchangeCombores() 
-{
-	// TODO: Add your control notification handler code here
-	UpdateData();
 }
 
 void CIniEditorDlg::OnPack() 
 {
-	// TODO: Add your control notification handler code here
-	int temp = m_gamma.GetPos();
-	TCHAR buf[512];
-    m_editgamma.GetWindowText( buf, sizeof( buf ) / sizeof(TCHAR) );
-	
 	MFileDlg dlgFile(TRUE);
 	TCHAR m_dir[512];
 	strcpy(m_dir, m_currentdir);
@@ -766,17 +488,10 @@ void CIniEditorDlg::OnPack()
 			UpdateData(FALSE);
 		}
 	}
-	m_gamma.SetSlidePos(temp);
-	m_editgamma.SetWindowText(buf);
 }
 
 void CIniEditorDlg::OnCbutton() 
 {
-	// TODO: Add your control notification handler code here
-	int temp = m_gamma.GetPos();
-	TCHAR buf[512];
-    m_editgamma.GetWindowText( buf, sizeof( buf ) / sizeof(TCHAR) );
-	
 	MFileDlg dlgFile(TRUE);
 	TCHAR m_dir[512];
 	strcpy(m_dir, m_currentdir);
@@ -813,18 +528,11 @@ void CIniEditorDlg::OnCbutton()
 			UpdateData(FALSE);
 		}
 	}
-	m_gamma.SetSlidePos(temp);
-	m_editgamma.SetWindowText(buf);
-	
+
 }
 
 void CIniEditorDlg::OnSabutton() 
 {
-	// TODO: Add your control notification handler code here
-	int temp = m_gamma.GetPos();
-	TCHAR buf[512];
-    m_editgamma.GetWindowText( buf, sizeof( buf ) / sizeof(TCHAR) );
-	
 	MFileDlg dlgFile(TRUE);
 	TCHAR m_dir[512];
 	strcpy(m_dir, m_currentdir);
@@ -855,18 +563,10 @@ void CIniEditorDlg::OnSabutton()
 			UpdateData(FALSE);
 		}
 	}
-	m_gamma.SetSlidePos(temp);
-	m_editgamma.SetWindowText(buf);
-	
 }
 
 void CIniEditorDlg::OnSsbutton() 
 {
-	// TODO: Add your control notification handler code here
-	int temp = m_gamma.GetPos();
-	TCHAR buf[512];
-    m_editgamma.GetWindowText( buf, sizeof( buf ) / sizeof(TCHAR) );
-	
 	MFileDlg dlgFile(TRUE);
 	TCHAR m_dir[512];
 	strcpy(m_dir, m_currentdir);
@@ -897,18 +597,10 @@ void CIniEditorDlg::OnSsbutton()
 			UpdateData(FALSE);
 		}
 	}
-	m_gamma.SetSlidePos(temp);
-	m_editgamma.SetWindowText(buf);
-	
 }
 
 void CIniEditorDlg::OnSsbutton2() 
 {
-	// TODO: Add your control notification handler code here
-		int temp = m_gamma.GetPos();
-	TCHAR buf[512];
-    m_editgamma.GetWindowText( buf, sizeof( buf ) / sizeof(TCHAR) );
-	
 	MFileDlg dlgFile(TRUE);
 	TCHAR m_dir[512];
 	strcpy(m_dir, m_currentdir);
@@ -939,17 +631,10 @@ void CIniEditorDlg::OnSsbutton2()
 			UpdateData(FALSE);
 		}
 	}
-	m_gamma.SetSlidePos(temp);
-	m_editgamma.SetWindowText(buf);
 }
 
 void CIniEditorDlg::OnSabutton2() 
 {
-	// TODO: Add your control notification handler code here
-	int temp = m_gamma.GetPos();
-	TCHAR buf[512];
-    m_editgamma.GetWindowText( buf, sizeof( buf ) / sizeof(TCHAR) );
-	
 	MFileDlg dlgFile(TRUE);
 	TCHAR m_dir[512];
 	strcpy(m_dir, m_currentdir);
@@ -980,17 +665,10 @@ void CIniEditorDlg::OnSabutton2()
 			UpdateData(FALSE);
 		}
 	}
-	m_gamma.SetSlidePos(temp);
-	m_editgamma.SetWindowText(buf);
 }
 
 void CIniEditorDlg::OnCbutton2() 
 {
-	// TODO: Add your control notification handler code here
-	int temp = m_gamma.GetPos();
-	TCHAR buf[512];
-    m_editgamma.GetWindowText( buf, sizeof( buf ) / sizeof(TCHAR) );
-	
 	MFileDlg dlgFile(TRUE);
 	TCHAR m_dir[512];
 	strcpy(m_dir, m_currentdir);
@@ -1027,6 +705,4 @@ void CIniEditorDlg::OnCbutton2()
 			UpdateData(FALSE);
 		}
 	}
-	m_gamma.SetSlidePos(temp);
-	m_editgamma.SetWindowText(buf);
 }
