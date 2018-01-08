@@ -1,49 +1,51 @@
 // IniEditor.h : main header file for the INIEDITOR application
 //
 
-#if !defined(AFX_INIEDITOR_H__7B0FA1E4_D330_11D4_85EA_0060674A702D__INCLUDED_)
-#define AFX_INIEDITOR_H__7B0FA1E4_D330_11D4_85EA_0060674A702D__INCLUDED_
+#if !defined(__INIEDITOR_H__)
+#define __INIEDITOR_H__
 
 #if _MSC_VER > 1000
 #pragma once
 #endif // _MSC_VER > 1000
 
-#ifndef __AFXWIN_H__
-	#error include 'stdafx.h' before including this file for PCH
-#endif
 
 #include "resource.h"		// main symbols
 
+class CIniEditorDlg;
 /////////////////////////////////////////////////////////////////////////////
 // CIniEditorApp:
 // See IniEditor.cpp for the implementation of this class
 //
 
-class CIniEditorApp : public CWinApp
+class CIniEditorApp
 {
 public:
 	CIniEditorApp();
+	~CIniEditorApp();
 
-// Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CIniEditorApp)
-	public:
-	virtual BOOL InitInstance();
-	//}}AFX_VIRTUAL
+public:
+	virtual BOOL InitInstance(HINSTANCE hInstance);
 
-// Implementation
+	HWND GetMainHWnd(void)		{ return m_MainHWnd; }
+	HINSTANCE GetHInstance(void){ return m_hInstance; }
+	CIniEditorDlg *GetDlg(void)	{ return m_pDlg; }
 
-	//{{AFX_MSG(CIniEditorApp)
-		// NOTE - the ClassWizard will add and remove member functions here.
-		//    DO NOT EDIT what you see in these blocks of generated code !
-	//}}AFX_MSG
-	DECLARE_MESSAGE_MAP()
+private:
+	HWND m_MainHWnd;
+	HINSTANCE m_hInstance;
+	CIniEditorDlg *m_pDlg;
 };
 
 
 /////////////////////////////////////////////////////////////////////////////
 
-//{{AFX_INSERT_LOCATION}}
-// Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_INIEDITOR_H__7B0FA1E4_D330_11D4_85EA_0060674A702D__INCLUDED_)
+#ifdef _THE_MASTER_MODULE_
+// The one and only IniEditorApp object
+CIniEditorApp theApp;
+#else
+extern CIniEditorApp theApp;
+#endif
+
+
+#endif // !defined(__INIEDITOR_H__)

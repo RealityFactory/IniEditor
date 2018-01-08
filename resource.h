@@ -2,29 +2,22 @@
 // Microsoft Developer Studio generated include file.
 // Used by IniEditor.rc
 //
-#define IDS_STRING1                     1
-#define IDS_STRING2                     2
-#define IDS_STRING3                     3
-#define IDS_STRING4                     4
-#define IDS_STRING5                     5
-#define IDS_VIDEO1024                   6
-#define IDS_VIDEO800                    7
-#define IDS_VIDEO640                    8
-#define IDS_VIDEO800W                   9
-#define IDS_VIDEO640W                   10
+
+#ifdef IDC_STATIC
+#undef IDC_STATIC
+#endif
+#define IDC_STATIC              (-1)     // all static controls
+
 #define IDD_INIEDITOR_DIALOG            102
 #define IDR_MAINFRAME                   128
-#define IDC_GAMENAME                    1000
-#define IDC_EDITPLAYER                  1001
-#define IDC_ACTBROWSE                   1002
-#define IDC_EDITMENU                    1003
-#define IDC_MENUINI                     1004
-#define IDC_EDITSTART                   1005
-#define IDC_STARTLEVEL                  1006
-#define IDC_SLIDERGAMMA                 1007
-#define IDC_COMBOVIDEO                  1008
-#define IDC_COMBORES                    1009
-#define IDC_EDITGAMMA                   1011
+#define IDC_GAMENAME                    1001
+#define IDC_EDITPLAYER                  1002
+#define IDC_ACTBROWSE                   1003
+#define IDC_EDITMENU                    1004
+#define IDC_MENUINI                     1005
+#define IDC_EDITSTART                   1006
+#define IDC_STARTLEVEL                  1007
+#define IDC_PLAYERNAME                  1008
 #define IDC_CHECKWEAPON                 1013
 #define IDC_PACKFILE                    1015
 #define IDC_PACK                        1016
@@ -49,6 +42,10 @@
 #define IDC_USECSELECT                  1035
 #define IDC_DIFFICULT                   1036
 #define IDC_DDIFF                       1037
+#define IDC_DLANG                       1038
+#define IDC_USENSELECT                  1039
+#define IDC_USEDIRECTINPUT              1040
+#define IDC_LOGGING                     1041
 
 // Next default values for new objects
 // 

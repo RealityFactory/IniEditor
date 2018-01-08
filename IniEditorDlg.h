@@ -1,100 +1,102 @@
 // IniEditorDlg.h : header file
 //
 
-#if !defined(AFX_INIEDITORDLG_H__7B0FA1E6_D330_11D4_85EA_0060674A702D__INCLUDED_)
-#define AFX_INIEDITORDLG_H__7B0FA1E6_D330_11D4_85EA_0060674A702D__INCLUDED_
+#if !defined(__INIEDITORDLG_H__)
+#define __INIEDITORDLG_H__
 
 #if _MSC_VER > 1000
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "SmartEdit.h"
-#include "sliders.h"
+#include <windows.h>
+#include <string>
+#include "IniEditor.h"
 
-/////////////////////////////////////////////////////////////////////////////
 // CIniEditorDlg dialog
 
-class CIniEditorDlg : public CDialog
+class CIniEditorDlg
 {
 // Construction
 public:
-	CIniEditorDlg(CWnd* pParent = NULL);	// standard constructor
+	CIniEditorDlg(HWND hwndParent = NULL);	// standard constructor
+	~CIniEditorDlg();
+	BOOL Create();
+	BOOL IsInitialized()	{ return m_bInit; }
+	HWND GetHWnd()			{ return m_hWnd; }
 
-	BOOL  m_fullscreen;
-	int   m_width;
-	int m_height;
+
+	BOOL m_fullscreen;
+	int  m_width;
+	int  m_height;
 	char m_driver[32];
 
+protected:
 // Dialog Data
-	//{{AFX_DATA(CIniEditorDlg)
 	enum { IDD = IDD_INIEDITOR_DIALOG };
-	CButton	m_ssbutton2;
-	CButton	m_sabutton2;
-	CButton	m_cutbutton2;
-	CButton	m_ssbutton;
-	CButton	m_sabutton;
-	CButton	m_cutbutton;
-	CButton	m_browsepack;
-	CButton	m_createini;
-	CButton	m_levelbrowse;
-	CButton	m_menubrowse;
-	CButton	m_actbrowse;
-	CEdit	m_GNEdit;
-	CString	m_actorname;
-	CString	m_menuname;
-	CString	m_levelname;
-	CString	m_gamename;
-	BOOL	m_weapon;
-	CString	m_packfile;
-	BOOL	m_usedialog;
-	BOOL	m_usecutscene;
-	CString	m_splashscreen;
-	CString	m_splashaudio;
-	CString	m_cutscene;
-	BOOL	m_usecutscene2;
-	CString	m_cutscene2;
-	CString	m_splashaudio2;
-	BOOL	m_usesecond;
-	CString	m_splashscreen2;
+
+	std::string	m_actorname;
+	std::string	m_menuname;
+	std::string	m_levelname;
+	std::string	m_gamename;
+	std::string	m_packfile;
+	std::string	m_LevelDir;
+	std::string	m_BitmapDir;
+	std::string	m_ActorDir;
+	std::string	m_AudioDir;
+	std::string	m_AudioStreamDir;
+	std::string	m_VideoDir;
+	std::string	m_MIDIDir;
 	BOOL	m_usefirst;
+	BOOL	m_usecutscene;
+	std::string	m_splashscreen;
+	std::string	m_splashaudio;
+	std::string	m_cutscene;
+	BOOL	m_usesecond;
+	BOOL	m_usecutscene2;
+	std::string	m_splashscreen2;
+	std::string	m_splashaudio2;
+	std::string	m_cutscene2;
+	BOOL	m_weapon;
+	BOOL	m_usedialog;
 	BOOL	m_showtrack;
 	BOOL	m_usecselect;
 	BOOL	m_difficult;
-	CString	m_ddif;
-	//}}AFX_DATA
+	std::string	m_ddif;
+	std::string	m_dlang;
+	BOOL	m_usenselect;
+	std::string	m_playername;
+	BOOL	m_usedirectinput;
+	BOOL	m_logging;
+
 	TCHAR m_currentdir[512];
 
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CIniEditorDlg)
-	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV support
-	//}}AFX_VIRTUAL
-
-// Implementation
 protected:
+	HWND m_hWnd;
+	BOOL m_bInit;
+
+
+public:
 	HICON m_hIcon;
 	int count;
 
-	// Generated message map functions
-	//{{AFX_MSG(CIniEditorDlg)
+	BOOL UpdateData(BOOL bSaveAndValidate = TRUE);
+
 	virtual BOOL OnInitDialog();
-	afx_msg void OnPaint();
-	afx_msg HCURSOR OnQueryDragIcon();
-	afx_msg void OnActbrowse();
-	afx_msg void OnMenuini();
-	afx_msg void OnStartlevel();
-	afx_msg void OnPack();
-	afx_msg void OnCbutton();
-	afx_msg void OnSabutton();
-	afx_msg void OnSsbutton();
-	afx_msg void OnSsbutton2();
-	afx_msg void OnSabutton2();
-	afx_msg void OnCbutton2();
-	//}}AFX_MSG
-	DECLARE_MESSAGE_MAP()
+	void OnOk();
+	void OnPaint();
+	HCURSOR OnQueryDragIcon();
+	void OnActbrowse();
+	void OnMenuini();
+	void OnStartlevel();
+	void OnPack();
+	void OnCbutton();
+	void OnSabutton();
+	void OnSsbutton();
+	void OnSsbutton2();
+	void OnSabutton2();
+	void OnCbutton2();
+	void OnDdif();
+	void OnDlang();
 };
 
-//{{AFX_INSERT_LOCATION}}
-// Microsoft Visual C++ will insert additional declarations immediately before the previous line.
-
-#endif // !defined(AFX_INIEDITORDLG_H__7B0FA1E6_D330_11D4_85EA_0060674A702D__INCLUDED_)
+#endif // !defined(__INIEDITORDLG_H__)

@@ -1,34 +1,51 @@
 
-#if !defined(AFX_MFILEDLG_H__D47E1646_D06E_11D4_85EA_0060674A702D__INCLUDED_)
-#define AFX_MFILEDLG_H__D47E1646_D06E_11D4_85EA_0060674A702D__INCLUDED_
+#if !defined(__MFILEDLG_H__)
+#define __MFILEDLG_H__
 
 #if _MSC_VER > 1000
 #pragma once
 #endif // _MSC_VER > 1000
 
+// abstract iteration position
+struct __POSITION { };
+typedef __POSITION* POSITION;
+
 //
 // MFileDlg
 //
-class MFileDlg : public CFileDialog
+class MFileDlg
 {
-	DECLARE_DYNAMIC(MFileDlg)
-		
+
 public:
 	MFileDlg(BOOL bOpenFileDialog, LPCTSTR lpszDefExt = NULL , LPCTSTR lpszFileName = NULL,
-		DWORD dwFlags = OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT/* | OFN_ALLOWMULTISELECT*/,
-		LPCTSTR lpszFilter = NULL, CWnd* pParentWnd = NULL) ;
-	
-	int DoModal();
-	void SetInitalDir(char *dir);
+		DWORD dwFlags = OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,	LPCTSTR lpszFilter = NULL);
+
 	virtual ~MFileDlg();
-	
-protected:
-	//{{AFX_MSG(MFileDlg)
-	// NOTE - the ClassWizard will add and remove member functions here.
-	//}}AFX_MSG
-	
-	TCHAR* m_pszFile;
-	DECLARE_MESSAGE_MAP()
+
+	int DoModal();
+	void SetInitalDir(LPCTSTR dir);
+
+	/**
+	 * @brief retrieving file full name
+	 **/
+	LPCTSTR GetFileName() const;
+	/**
+	 * @brief retrieving file title
+	 **/
+	LPCTSTR GetFileTitle() const { return m_szFileTitle; }
+
+	LPCTSTR GetNextPathName(POSITION& pos) const;
+
+	POSITION GetStartPosition() const { return (POSITION)m_ofn.lpstrFile; }
+
+	// members
+public:
+	OPENFILENAME  m_ofn;
+
+private:
+    TCHAR m_szFileTitle[_MAX_PATH];	// contains file title after return
+	TCHAR m_szFileName[_MAX_PATH];	// contains full path name after return
+	OPENFILENAME*  m_pofnTemp;
 };
 
-#endif
+#endif // !defined(__MFILEDLG_H__)
